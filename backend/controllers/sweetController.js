@@ -32,3 +32,12 @@ export const deleteSweet = (req, res) => {
   model.deleteSweet(id);
   res.status(200).json({ message: 'Sweet deleted successfully' });
 };
+
+
+
+// view sweets
+
+export const getAllSweets = (req, res) => {
+  const sweets = model.getAll();
+  res.status(200).json(sweets);
+};

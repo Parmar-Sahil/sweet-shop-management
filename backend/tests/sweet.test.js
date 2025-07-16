@@ -20,3 +20,24 @@ test('adds a sweet', async () => {
   assert.equal(res.statusCode, 201);
   assert.equal(res.body.name, 'Kaju Katli');
 });
+
+
+// delete sweet
+
+test('deletes a sweet', async () => {
+  // Arrange
+  await request(app).post('/sweets').send({
+    id: '2',
+    name: 'Barfi',
+    category: 'Milk',
+    price: 25,
+    quantity: 8
+  });
+
+  // Act
+  const res = await request(app).delete('/sweets/2');
+
+  // Assert
+  expect(res.statusCode).toBe(200);
+  expect(res.body.message).toBe('Sweet deleted successfully');
+});

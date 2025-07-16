@@ -22,10 +22,9 @@ test('adds a sweet', async () => {
 });
 
 
-// delete sweet
+// delete test
 
 test('deletes a sweet', async () => {
-  // Arrange
   await request(app).post('/sweets').send({
     id: '2',
     name: 'Barfi',
@@ -34,10 +33,37 @@ test('deletes a sweet', async () => {
     quantity: 8
   });
 
-  // Act
   const res = await request(app).delete('/sweets/2');
 
-  // Assert
-  expect(res.statusCode).toBe(200);
-  expect(res.body.message).toBe('Sweet deleted successfully');
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.message, 'Sweet deleted successfully');
+});
+
+
+// view test
+
+test('views all sweets', async () => {
+  // Add 2 sweets
+  await request(app).post('/sweets').send({
+    id: '3',
+    name: 'Ladoo',
+    category: 'Round',
+    price: 20,
+    quantity: 10
+  });
+
+  await request(app).post('/sweets').send({
+    id: '4',
+    name: 'Jalebi',
+    category: 'Sugar',
+    price: 15,
+    quantity: 12
+  });
+
+  // Make GET request
+  const res = await request(app).get('/sweets');
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(Array.isArray(res.body), true);
+  assert.equal(res.body.length, 2);
 });

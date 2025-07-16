@@ -41,3 +41,35 @@ export const getAllSweets = (req, res) => {
   const sweets = model.getAll();
   res.status(200).json(sweets);
 };
+
+
+// search and sort controller
+
+
+export const searchAndSort = (req, res) => {
+  let sweets = model.getAll();
+
+  const { name, category, minPrice, maxPrice, sortBy } = req.query;
+
+  if (name) {
+    sweets = sweets.filter(s => s.name.toLowerCase().includes(name.toLowerCase()));
+  }
+
+  if (category) {
+    sweets = sweets.filter(s => s.category.toLowerCase() === category.toLowerCase());
+  }
+
+  if (minPrice) {
+    sweets = sweets.filter(s => s.price >= parseFloat(minPrice));
+  }
+
+  if (maxPrice) {
+    sweets = sweets.filter(s => s.price <= parseFloat(maxPrice));
+  }
+
+  if (sortBy && ['name', 'price', 'quantity'].includes(sortBy)) {
+    sweets.sort((a, b) => (a[sortBy] > b[sortBy] ? 1 : -1));
+  }
+
+  res.status(200).json(sweets);
+};

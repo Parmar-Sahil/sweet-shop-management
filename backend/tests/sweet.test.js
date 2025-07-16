@@ -67,3 +67,60 @@ test('views all sweets', async () => {
   assert.equal(Array.isArray(res.body), true);
   assert.equal(res.body.length, 2);
 });
+
+
+// search by name test
+
+test('searches sweets by name', async () => {
+  await request(app).post('/sweets').send({
+    id: '5', name: 'Rasgulla', category: 'Milk', price: 30, quantity: 20
+  });
+
+  const res = await request(app).get('/sweets/search?name=rasgulla');
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.length, 1);
+  assert.equal(res.body[0].name, 'Rasgulla');
+});
+
+
+//search by category
+
+test('searches sweets by category', async () => {
+  await request(app).post('/sweets').send({
+    id: '6', name: 'Gulab Jamun', category: 'Milk', price: 40, quantity: 10
+  });
+
+  const res = await request(app).get('/sweets/search?category=Milk');
+
+  assert.equal(res.statusCode, 200);
+  assert.ok(res.body.find(sweet => sweet.name === 'Gulab Jamun'));
+});
+
+
+// search by price range
+
+test('searches sweets by price range', async () => {
+  await request(app).post('/sweets').send({
+    id: '7', name: 'Sandesh', category: 'Bengali', price: 20, quantity: 15
+  });
+
+  const res = await request(app).get('/sweets/search?minPrice=10&maxPrice=25');
+
+  assert.equal(res.statusCode, 200);
+  assert.ok(res.body.find(sweet => sweet.name === 'Sandesh'));
+});
+
+
+
+//sort by price
+
+test('sorts sweets by price', async () => {
+  await request(app).post('/sweets').send({ id: '8', name: 'Imarti', category: 'Fried', price: 10, quantity: 5 });
+  await request(app).post('/sweets').send({ id: '9', name: 'Kheer', category: 'Rice', price: 30, quantity: 5 });
+
+  const res = await request(app).get('/sweets/search?sortBy=price');
+
+  assert.equal(res.statusCode, 200);
+  assert.ok(res.body[0].price <= res.body[1].price);
+});

@@ -1,5 +1,8 @@
 import * as model from '../models/sweetModel.js';
 
+
+// add sweet controller
+
 export const addSweet = (req, res) => {
   const { id, name, category, price, quantity } = req.body;
 

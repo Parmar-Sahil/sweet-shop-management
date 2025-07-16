@@ -124,3 +124,56 @@ test('sorts sweets by price', async () => {
   assert.equal(res.statusCode, 200);
   assert.ok(res.body[0].price <= res.body[1].price);
 });
+
+
+//purchase sweets test
+
+test('purchases a sweet and reduces stock', async () => {
+  await request(app).post('/sweets').send({
+    id: '10',
+    name: 'Kesar Peda',
+    category: 'Milk',
+    price: 25,
+    quantity: 10
+  });
+
+  const res = await request(app).post('/sweets/10/purchase').send({
+    quantity: 4
+  });
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.quantity, 6); // 10 - 4 = 6
+});
+
+
+//insufficient stock  test
+
+test('returns error if purchase quantity exceeds stock', async () => {
+  await request(app).post('/sweets').send({
+    id: '11',
+    name: 'Cham Cham',
+    category: 'Milk',
+    price: 15,
+    quantity: 3
+  });
+
+  const res = await request(app).post('/sweets/11/purchase').send({
+    quantity: 5
+  });
+
+  assert.equal(res.statusCode, 400);
+  assert.equal(res.body.error, 'Not enough stock');
+});
+
+
+//sweet not found test
+
+test('returns error if sweet does not exist when purchasing', async () => {
+  const res = await request(app).post('/sweets/999/purchase').send({
+    quantity: 1
+  });
+
+  assert.equal(res.statusCode, 404);
+  assert.equal(res.body.error, 'Sweet not found');
+});
+

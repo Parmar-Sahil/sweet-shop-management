@@ -177,3 +177,35 @@ test('returns error if sweet does not exist when purchasing', async () => {
   assert.equal(res.body.error, 'Sweet not found');
 });
 
+
+// restock sweet test
+
+test('restocks a sweet and increases stock', async () => {
+  await request(app).post('/sweets').send({
+    id: '12',
+    name: 'Besan Ladoo',
+    category: 'Dry',
+    price: 10,
+    quantity: 5
+  });
+
+  const res = await request(app).post('/sweets/12/restock').send({
+    quantity: 7
+  });
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.quantity, 12); // 5 + 7 = 12
+});
+
+
+//restock non-existing sweet
+
+test('returns error if sweet does not exist when restocking', async () => {
+  const res = await request(app).post('/sweets/999/restock').send({
+    quantity: 3
+  });
+
+  assert.equal(res.statusCode, 404);
+  assert.equal(res.body.error, 'Sweet not found');
+});
+

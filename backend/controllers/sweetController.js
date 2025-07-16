@@ -94,3 +94,21 @@ export const purchaseSweet = (req, res) => {
   sweet.quantity -= quantity;
   res.status(200).json(sweet);
 };
+
+
+
+//restock controller
+
+export const restockSweet = (req, res) => {
+  const { id } = req.params;
+  const { quantity } = req.body;
+
+  const sweet = model.find(id);
+  if (!sweet) {
+    return res.status(404).json({ error: 'Sweet not found' });
+  }
+
+  sweet.quantity += quantity;
+  res.status(200).json(sweet);
+};
+
